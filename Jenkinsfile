@@ -43,11 +43,9 @@ node {
       input "Deploy to prod?"
     }
 
-    node {
-      stage('Run Prod App'){
-        sh "docker stop devops_challenge_prod"
-        sh "docker rm devops_challenge_prod"
-        sh "docker run -d -p 8000:8000 --env-file .env --name devops_challenge_prod --link prod-redis:redis roshans007/devops_challenge"
-      }
+    stage('Run Prod App'){
+      sh "docker stop devops_challenge_prod"
+      sh "docker rm devops_challenge_prod"
+      sh "docker run -d -p 8000:8000 --env-file .env --name devops_challenge_prod --link prod-redis:redis roshans007/devops_challenge"
     }
 }
