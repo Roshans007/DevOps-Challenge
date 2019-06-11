@@ -33,9 +33,21 @@ node {
         }
     }
 
-    stage('Run App Dev'){
+    stage('Run Dev App'){
         sh "docker stop devops_challenge_dev"
         sh "docker rm devops_challenge_dev"
         sh "docker run -d -p 8001:8001 --env-file .env -e 'PORT=8001' --name devops_challenge_dev --link dev-redis:redis roshans007/devops_challenge"
+    }
+
+    stage('Deploy approval'){
+      input "Deploy to prod?"
+    }
+
+    node {
+      stage('Run Prod App'){
+        sh "docker stop devops_challenge_prod"
+        sh "docker rm devops_challenge_prod"
+        sh "docker run -d -p 8000:8000 --env-file .env --name devops_challenge_prod --link prod-redis:redis roshans007/devops_challenge"
+      }
     }
 }
