@@ -11,7 +11,7 @@ services:
     links:
       - redis
     env_file:
-      - ./env/.env
+      - .env
     ports:
       - "8000:8000"
 

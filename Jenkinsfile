@@ -2,19 +2,18 @@ node {
     def app
 
     stage('Clone repository') {
-        /* Let's make sure we have the repository cloned to our workspace */
+        /* Clone repository to the workspace */
         checkout scm
     }
 
-    stage('Build image') {
-        /* This builds the actual image; synonymous to
-         * docker build on the command line */
+    stage('Build Application') {
+        /* This builds the actual image */
 
         sh "docker image prune -f"
         app = docker.build("roshans007/devops_challenge")
     }
 
-    stage('Test image') {
+    stage('Test Application') {
         /* We would run a test framework against our image. */
 
         app.inside {
@@ -22,8 +21,8 @@ node {
         }
     }
 
-    stage('Push image') {
-        /* Finally, we'll push the image with two tags:
+    stage('Push Image') {
+        /* We'll push the image with two tags:
          * First, the incremental build number from Jenkins
          * Second, the 'latest' tag.
          * Pushing multiple tags is cheap, as all the layers are reused. */
@@ -33,19 +32,26 @@ node {
         }
     }
 
-    stage('Run Dev App'){
+    stage('Deploy to Staging'){
+        /* Remove the old container
+            and deploy the new image in staging
+           Note: Currently the deployment server is same for prod & stage so using port 8001 for staging
+        */
         sh "docker stop devops_challenge_dev"
         sh "docker rm devops_challenge_dev"
         sh "docker run -d -p 8001:8001 --env-file .env -e 'PORT=8001' --name devops_challenge_dev --link dev-redis:redis roshans007/devops_challenge"
     }
 
     stage('Deploy approval'){
-      input "Deploy to prod?"
+        input "Deploy to prod?"
     }
 
-    stage('Run Prod App'){
-      sh "docker stop devops_challenge_prod"
-      sh "docker rm devops_challenge_prod"
-      sh "docker run -d -p 8000:8000 --env-file .env --name devops_challenge_prod --link prod-redis:redis roshans007/devops_challenge"
+    stage('Deploy to Prod'){
+        /* Remove the old container
+            and deploy the new image in prod
+        */
+        sh "docker stop devops_challenge_prod"
+        sh "docker rm devops_challenge_prod"
+        sh "docker run -d -p 8000:8000 --env-file .env -e 'ENVIRONMENT=PROD' --name devops_challenge_prod --link prod-redis:redis roshans007/devops_challenge"
     }
 }
