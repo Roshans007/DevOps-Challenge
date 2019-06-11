@@ -34,7 +34,12 @@ node {
         }
     }
 
-    stage('Deploy @ Prod') {
-        dockerCmd "run roshans007/devops_challenge -d -p 8000:8000 --env-file env/prod.env"
+    stage('Run App'){
+        runApp()
     }
+}
+
+def runApp(){
+    sh "docker run -d --rm -p 8000:8000 --name devops_challenge_prod roshans007/devops_challenge --env-file env/prod.env"
+    echo "Application started"
 }
