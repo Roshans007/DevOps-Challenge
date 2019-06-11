@@ -4,19 +4,17 @@ services:
   web:
     build:
       context: .
-    volumes:
-      - .:/devops_challenge
     depends_on:
       - redis
     links:
       - redis
     env_file:
-      - ./env/.env
+      - ./env/dev.env
     ports:
-      - "8000:8000"
+      - "8001:8001"
 
   redis:
     image: redis:latest
     command: redis-server --appendonly yes
     volumes:
-      - ./data:/data
+      - /docker/redis-dev-data:/data

@@ -7,20 +7,15 @@ node {
         checkout scm
     }
 
-    stage('Build image') {
-        /* This builds the actual image; synonymous to
-         * docker build on the command line */
-
-        app = docker.build("roshans007/devops_challenge")
+    stage(Build) {
+      sh ‘docker-compose -f dev-docker-compose.yml up -d’
     }
 
-    stage('Test image') {
+    stage('Test') {
         /* Ideally, we would run a test framework against our image.
          * For this example, we're using a Volkswagen-type approach ;-) */
-
-        app.inside {
-            sh 'python tests/test.py'
-        }
+      sh
+      docker run --env-file .env quay.io/deserve/static:${CODEBUILD_SOURCE_VERSION} /bin/bash -c 'python manage.py collectstatic --noinput --verbosity 1' 
     }
 
     stage('Push image') {
