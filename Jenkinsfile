@@ -33,4 +33,15 @@ node {
             app.push("latest")
         }
     }
+    stage('Deploy') {
+        docker.image('roshans007/devops_challenge:latest').withRun('-p 8000:8000 --env-file env/prod.env') {
+          /* do things */
+        }
+    }
+
+    /*stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi -f roshans007/devops_challenge:latest roshans007/devops_challenge:${env.BUILD_NUMBER}"
+      }
+    }*/
 }
