@@ -36,6 +36,6 @@ node {
     stage('Run App Dev'){
         sh "docker stop devops_challenge_dev"
         sh "docker rm devops_challenge_dev"
-        sh "docker run -d -p 8001:8001 -e 'PORT=8001' --name devops_challenge_dev --link dev-redis:redis roshans007/devops_challenge"
+        sh "docker run -d -p 8001:8001 --env-file .env -e 'PORT=8001' --name devops_challenge_dev --link dev-redis:redis roshans007/devops_challenge"
     }
 }
