@@ -41,6 +41,6 @@ node {
 
 def runApp(){
     sh "ls"
-    sh "docker run -d -p 8000:8000 --env-file ./env/prod.env --name devops_challenge_prod roshans007/devops_challenge"
+    sh "docker run -d -p 8000:8000 --env-file ./env/prod.env --name devops_challenge_prod --link dev-redis:redis roshans007/devops_challenge"
     echo "Application started"
 }
