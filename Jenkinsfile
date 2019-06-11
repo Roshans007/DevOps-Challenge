@@ -34,9 +34,7 @@ node {
         }
     }
 
-    stage('Deploy') {
-       steps {
-         sh 'docker run roshans007/devops_challenge -d -p 8000:8000 --env-file env/prod.env'
-       }
+    stage('Deploy @ Prod') {
+        dockerCmd "run roshans007/devops_challenge -d -p 8000:8000 --env-file env/prod.env"
     }
 }
